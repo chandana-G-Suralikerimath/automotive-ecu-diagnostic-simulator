@@ -1,0 +1,18 @@
+# Compiled executables
+*.exe
+
+# Object files
+*.o
+*.obj
+
+# Build directories
+build/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Visual Studio Code settings
+.vscode/git add -u
