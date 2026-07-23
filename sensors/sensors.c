@@ -13,6 +13,11 @@ typedef enum
 } VehicleState;
 
 /*---------------------------------------------------------
+ * State Counter
+ *--------------------------------------------------------*/
+static int stateCounter = 0;
+
+/*---------------------------------------------------------
  * Internal Simulation Variables
  *--------------------------------------------------------*/
 static VehicleState currentState = ENGINE_OFF;
@@ -38,9 +43,8 @@ void updateVehicleData(VehicleData *vehicle)
 {
     switch (currentState)
     {
+        /*---------------------------------------------*/
         case ENGINE_OFF:
-
-            /* Vehicle is completely OFF */
 
             speed = 0;
             rpm = 0;
@@ -48,11 +52,18 @@ void updateVehicleData(VehicleData *vehicle)
 
             engine_running = false;
 
+            stateCounter++;
+
+            if (stateCounter >= 3)
+            {
+                currentState = ENGINE_IDLE;
+                stateCounter = 0;
+            }
+
             break;
 
+        /*---------------------------------------------*/
         case ENGINE_IDLE:
-
-            /* Engine ON but vehicle not moving */
 
             speed = 0;
             rpm = 800;
@@ -60,23 +71,107 @@ void updateVehicleData(VehicleData *vehicle)
 
             engine_running = true;
 
+            coolant_temperature += 0.2f;
+
+            stateCounter++;
+
+            if (stateCounter >= 5)
+            {
+                currentState = ACCELERATING;
+                stateCounter = 0;
+            }
+
             break;
 
+        /*---------------------------------------------*/
         case ACCELERATING:
 
-            /* We will implement this later */
+            engine_running = true;
+
+            speed += 20;
+
+            if (speed <= 20)
+            {
+                gear = 1;
+                rpm = 1800;
+            }
+            else if (speed <= 40)
+            {
+                gear = 2;
+                rpm = 2200;
+            }
+            else if (speed <= 60)
+            {
+                gear = 3;
+                rpm = 2500;
+            }
+            else if (speed <= 80)
+            {
+                gear = 4;
+                rpm = 2800;
+            }
+            else
+            {
+                gear = 5;
+                rpm = 3000;
+            }
+
+            fuel_level -= 0.5f;
+            coolant_temperature += 0.5f;
+            battery_voltage = 13.8f;
+
+            if (speed >= 80)
+            {
+                currentState = CRUISING;
+            }
 
             break;
 
+        /*---------------------------------------------*/
         case CRUISING:
 
-            /* We will implement this later */
+            engine_running = true;
+
+            speed = 80;
+            gear = 5;
+            rpm = 2200;
+
+            fuel_level -= 0.2f;
+
+            if (coolant_temperature < 95.0f)
+            {
+                coolant_temperature += 0.2f;
+            }
+
+            stateCounter++;
+
+            if (stateCounter >= 5)
+            {
+                currentState = ACCELERATING;
+                stateCounter = 0;
+
+                speed = 40;
+            }
 
             break;
     }
 
-    /* Copy simulated values into VehicleData */
+    /*-------------------------------------------------
+     * Safety Limits
+     *------------------------------------------------*/
+    if (fuel_level < 0.0f)
+    {
+        fuel_level = 0.0f;
+    }
 
+    if (battery_voltage < 11.8f)
+    {
+        battery_voltage = 11.8f;
+    }
+
+    /*-------------------------------------------------
+     * Copy Simulation Data to Vehicle Structure
+     *------------------------------------------------*/
     vehicle->speed_kmph = speed;
     vehicle->engine_rpm = rpm;
 

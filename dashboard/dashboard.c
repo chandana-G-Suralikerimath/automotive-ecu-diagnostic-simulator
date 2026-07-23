@@ -1,13 +1,19 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "dashboard.h"
 
 void dashboard_display(const VehicleData *vehicle,
                        const ECUStatus *status)
 {
+    /* Clear console (Windows) */
+    system("cls");
+
     printf("=============================================\n");
     printf("      AUTOMOTIVE ECU DASHBOARD\n");
     printf("=============================================\n\n");
 
+    /* Vehicle Information */
     printf("Speed        : %d km/h\n", vehicle->speed_kmph);
     printf("RPM          : %d\n", vehicle->engine_rpm);
     printf("Gear         : %d\n", vehicle->gear);
@@ -30,6 +36,7 @@ void dashboard_display(const VehicleData *vehicle,
 
     printf("\n----------- ECU STATUS -----------\n");
 
+    /* ECU Outputs */
     printf("Cooling Fan  : %s\n",
            status->cooling_fan_on ? "ON" : "OFF");
 
