@@ -1,90 +1,121 @@
-# Automotive ECU Dashboard & Diagnostic Simulator
+# 🚗 Automotive ECU Diagnostic Simulator
 
-A modular Embedded C project that simulates the core functionality of an Automotive Electronic Control Unit (ECU). The project is designed to demonstrate embedded software architecture by separating sensor acquisition, ECU decision-making, and dashboard display into independent modules.
+A modular Automotive ECU (Electronic Control Unit) Diagnostic Simulator developed in **Embedded C**. The project simulates vehicle sensor data, processes it through an ECU module, displays the vehicle status on a dashboard, and logs important ECU events.
 
----
-
-## Project Overview
-
-This simulator mimics how an automotive ECU processes vehicle sensor data, evaluates system conditions, and updates the dashboard with vehicle status and warnings.
-
-The project is implemented entirely in **Embedded C** using a modular software architecture similar to real automotive firmware.
+This project demonstrates fundamental embedded software concepts such as modular programming, state machines, sensor simulation, ECU decision making, and diagnostic logging.
 
 ---
 
-## Features (Current)
+## 📌 Features
 
-- Modular project architecture
-- Simulated vehicle sensor data
-- ECU decision-making module
-- Dashboard display
-- Vehicle status structure
-- ECU status structure
-- Clean separation between modules
+- Simulates vehicle operating states:
+  - Engine OFF
+  - Engine IDLE
+  - Vehicle ACCELERATING
+  - Vehicle CRUISING
+
+- Simulates real-time vehicle parameters:
+  - Vehicle Speed
+  - Engine RPM
+  - Gear Position
+  - Fuel Level
+  - Coolant Temperature
+  - Battery Voltage
+
+- ECU Diagnostic Functions:
+  - Cooling Fan Control
+  - Engine Overheat Detection
+  - Low Fuel Warning
+  - Battery Voltage Warning
+  - Door Open Warning
+
+- Console Dashboard displaying:
+  - Live Vehicle Data
+  - ECU Status
+  - Warning Indicators
+
+- Diagnostic Logger for:
+  - Vehicle Information
+  - ECU Events
 
 ---
 
-## Project Structure
+# 📂 Project Structure
 
 ```
-Automotive_ECU/
+automotive-ecu-diagnostic-simulator/
 │
 ├── app/
 │   └── main.c
-│
-├── include/
-│   ├── vehicle_data.h
-│   └── ecu_status.h
-│
-├── sensors/
-│   ├── sensors.c
-│   └── sensors.h
-│
-├── ecu/
-│   ├── ecu.c
-│   └── ecu.h
 │
 ├── dashboard/
 │   ├── dashboard.c
 │   └── dashboard.h
 │
+├── ecu/
+│   ├── ecu.c
+│   └── ecu.h
+│
+├── sensors/
+│   ├── sensors.c
+│   └── sensors.h
+│
 ├── logger/
+│   ├── logger.c
+│   └── logger.h
 │
-├── README.md
+├── include/
+│   ├── vehicle_data.h
+│   └── ecu_status.h
 │
-└── CMakeLists.txt
+└── README.md
 ```
 
 ---
 
-## Module Description
+# ⚙️ Software Architecture
 
-### Sensor Module
-
-Generates simulated vehicle sensor values.
-
-Current sensor parameters:
-
-- Vehicle Speed
-- Engine RPM
-- Coolant Temperature
-- Fuel Level
-- Battery Voltage
-- Gear Position
-- Engine Status
-- Door Status
-- ABS Status
-- Airbag Status
+```
+        Sensors Module
+              │
+              ▼
+        VehicleData Structure
+              │
+              ▼
+          ECU Module
+              │
+              ▼
+        ECUStatus Structure
+              │
+      ┌───────┴────────┐
+      ▼                ▼
+ Dashboard Module   Logger Module
+```
 
 ---
 
-### ECU Module
+# 🧩 Module Description
 
-Processes sensor data and determines vehicle status.
+## Sensors Module
 
-Current ECU decisions:
+Simulates various vehicle sensor values including:
 
-- Cooling Fan Status
+- Speed
+- Engine RPM
+- Gear Position
+- Fuel Level
+- Coolant Temperature
+- Battery Voltage
+
+It uses a simple state machine to simulate different vehicle operating conditions.
+
+---
+
+## ECU Module
+
+Processes the simulated sensor values and generates ECU outputs such as:
+
+- Cooling Fan ON/OFF
 - Engine Overheat Warning
 - Low Fuel Warning
 - Battery Warning
@@ -92,25 +123,98 @@ Current ECU decisions:
 
 ---
 
-### Dashboard Module
+## Dashboard Module
 
-Displays vehicle information and ECU status in a console dashboard.
+Displays:
 
-Example output:
+- Vehicle Parameters
+- Engine Status
+- ECU Warning Indicators
+
+using a formatted console dashboard.
+
+---
+
+## Logger Module
+
+Logs:
+
+- Vehicle Information
+- ECU Diagnostic Events
+
+to assist in debugging and diagnostics.
+
+---
+
+# 🚀 State Machine
+
+```
+ENGINE OFF
+      │
+      ▼
+ENGINE IDLE
+      │
+      ▼
+ACCELERATING
+      │
+      ▼
+CRUISING
+      │
+      └───────────────┐
+                      ▼
+               ACCELERATING
+```
+
+---
+
+# 🛠 Technologies Used
+
+- Embedded C
+- GCC (MinGW)
+- Git
+- GitHub
+- Visual Studio Code
+
+---
+
+# ▶️ Build Instructions
+
+Compile using GCC:
+
+```bash
+gcc app/main.c dashboard/dashboard.c sensors/sensors.c ecu/ecu.c logger/logger.c -Iinclude -o ecu_dashboard
+```
+
+Run:
+
+```bash
+./ecu_dashboard
+```
+
+or on Windows:
+
+```bash
+ecu_dashboard.exe
+```
+
+---
+
+# 📷 Sample Output
 
 ```
 =============================================
       AUTOMOTIVE ECU DASHBOARD
 =============================================
 
-Speed        : 0 km/h
-RPM          : 0
-Gear         : 0
-Fuel         : 75.0 %
-Battery      : 12.6 V
-Coolant Temp : 25.0 C
+Speed        : 80 km/h
+RPM          : 2200
+Gear         : 5
 
-Engine       : OFF
+Fuel         : 72.8 %
+Battery      : 13.8 V
+Coolant Temp : 88.5 C
+
+Engine       : ON
 Door         : CLOSED
 ABS          : INACTIVE
 Airbag       : READY
@@ -128,76 +232,42 @@ Door Warning : NO
 
 ---
 
-## Technologies Used
+# 💡 Embedded Concepts Demonstrated
 
-- C
-- GCC
-- Git
-- CMake
-
----
-
-## Software Architecture
-
-```
-               +------------------+
-               |  Sensor Module   |
-               +------------------+
-                        |
-                        |
-                VehicleData
-                        |
-                        v
-               +------------------+
-               |    ECU Module    |
-               +------------------+
-                        |
-                        |
-                 ECUStatus
-                        |
-                        v
-              +-------------------+
-              | Dashboard Module  |
-              +-------------------+
-```
+- Modular Programming
+- Header File Organization
+- Structures
+- Pointers
+- State Machine Design
+- Sensor Simulation
+- ECU Decision Logic
+- Diagnostic Logging
+- Console Dashboard
+- Embedded Software Architecture
 
 ---
 
-## Current Workflow
+# 🔮 Future Improvements
 
-```
-main()
-
-↓
-
-updateVehicleData()
-
-↓
-
-processECU()
-
-↓
-
-dashboard_display()
-```
-
----
-
-## Future Enhancements
-
-- Dynamic sensor simulation
-- Real-time dashboard updates
-- Event Logger
-- CAN Bus message simulation
-- Diagnostic Trouble Codes (DTC)
-- Fault Injection
-- Engine Start/Stop Simulation
-- Gear Shift Logic
-- Fuel Consumption Simulation
+- CAN Bus Message Simulation
+- UART-Based Serial Console
+- Fault Injection Module
+- Sensor Noise Simulation
+- EEPROM Configuration Storage
+- FreeRTOS Task-Based Implementation
+- File-Based Logging
 - Unit Testing
 
 ---
 
-## Author
+# 👩‍💻 Author
 
 **Chandana G Suralikerimath**
+
+Embedded Systems Engineer
+
+- **GitHub:** https://github.com/chandana-G-Suralikerimath
+- **LinkedIn:** https://www.linkedin.com/in/chandana-g-suralikerimath
+---
+
+## ⭐ If you found this project useful, consider giving it a star!
